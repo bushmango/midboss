@@ -1,4 +1,7 @@
-import * as React from 'react'
+//import * as React from 'react'
+
+const React = require('react')
+
 const { useState, useEffect } = React
 import * as PubSub from 'pubsub-js'
 import { _ } from './imports/lodash'
