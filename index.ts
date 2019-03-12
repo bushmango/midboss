@@ -28,9 +28,9 @@ export interface IMidboss<T> {
   getState: () => T
   setState: (changes: Partial<T>) => any
   produce: (producer: (draftState: T) => void) => void
-  subscribeComponent: (component: React.Component) => any
-  subscribeHook: (callback: (state: T) => any) => any
-  unSubscribe: (token) => void
+  subscribeComponent: (component: React.Component) => string
+  subscribeHook: (callback: (state: T) => any) => string
+  unSubscribe: (token: string) => void
   setOptions: (options: Partial<IMidbossLiveOptions>) => void
   getOptions: () => IMidbossOptions
   rehydrate: (changes: Partial<T>) => any
@@ -179,8 +179,11 @@ export function createMidboss<T>(
 }
 
 // React hook
-export function useSubscription<T>(midboss: IMidboss<T>) {
-  const [state, setState] = useState(midboss.getState())
+export function useSubscription<T>(midboss: IMidboss<T>): T {
+  const [state, setState] = useState(midboss.getState()) as [
+    T,
+    (stateChange: Partial<T>) => void
+  ]
 
   const handleStateChange = (newState: T) => {
     setState(newState)
