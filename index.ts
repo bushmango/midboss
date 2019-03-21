@@ -21,6 +21,8 @@ export interface IMidbossOptions<T> {
   useClone: boolean
   useLocalStorage: boolean
   localStorageFields?: [keyof T]
+  onSave?: (t: T) => void
+  onRestore?: (t: T) => T
   useImmer: boolean
 }
 export interface IMidbossLiveOptions {
@@ -61,6 +63,9 @@ function tryCloneAndFreeze<T>(
 
   if (options.useLocalStorage && saver) {
     saver.save(nextState)
+  }
+  if (options.onSave) {
+    options.onSave(nextState)
   }
 
   return nextState
@@ -112,6 +117,9 @@ export function createMidboss<T>(
     //   }
     // }
     initialState = saver.restore(initialState)
+  }
+  if (_options.onRestore) {
+    initialState = _options.onRestore(initialState)
   }
 
   let state = tryCloneAndFreeze(initialState, saver, _options)
