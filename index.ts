@@ -2,6 +2,8 @@
 
 const React = require('react')
 
+import * as flavorSaver from 'flavor-saver'
+
 const { useState, useEffect } = React
 import * as PubSub from 'pubsub-js'
 import { _ } from './imports/lodash'
@@ -9,15 +11,16 @@ import * as immer from 'immer'
 
 function log(...x) {
   if (console && console.log) {
-    console.log(...x)
+    console.log('midboss', ...x)
   }
 }
 
-export interface IMidbossOptions {
+export interface IMidbossOptions<T> {
   useVerbose: boolean
   useFreeze: boolean
   useClone: boolean
   useLocalStorage: boolean
+  localStorageFields?: [keyof T]
   useImmer: boolean
 }
 export interface IMidbossLiveOptions {
@@ -32,11 +35,15 @@ export interface IMidboss<T> {
   subscribeHook: (callback: (state: T) => any) => string
   unSubscribe: (token: string) => void
   setOptions: (options: Partial<IMidbossLiveOptions>) => void
-  getOptions: () => IMidbossOptions
+  getOptions: () => IMidbossOptions<T>
   rehydrate: (changes: Partial<T>) => any
 }
 
-function tryCloneAndFreeze(state, localStorageKey, options: IMidbossOptions) {
+function tryCloneAndFreeze<T>(
+  state,
+  saver: flavorSaver.IFlavorSaver<T>,
+  options: IMidbossOptions<T>
+) {
   let nextState = state
 
   if (options.useImmer) {
@@ -46,15 +53,20 @@ function tryCloneAndFreeze(state, localStorageKey, options: IMidbossOptions) {
     Object.freeze(nextState)
   }
 
-  if (options.useLocalStorage) {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(localStorageKey, JSON.stringify(nextState))
-    }
+  // if (options.useLocalStorage) {
+  //   if (typeof localStorage !== 'undefined') {
+  //     localStorage.setItem(localStorageKey, JSON.stringify(nextState))
+  //   }
+  // }
+
+  if (options.useLocalStorage && saver) {
+    saver.save(nextState)
   }
+
   return nextState
 }
 
-function tryFreeze(state, options: IMidbossOptions) {
+function tryFreeze<T>(state, options: IMidbossOptions<T>) {
   if (options.useImmer) {
     // Don't freeze
   } else if (options.useFreeze && Object.freeze) {
@@ -66,40 +78,50 @@ export function createMidboss<T>(
   stateKey,
   version: string,
   initialState: T,
-  options: Partial<IMidbossOptions>
+  options: Partial<IMidbossOptions<T>>
 ): IMidboss<T> {
-  let _options: IMidbossOptions = _.defaults(options, {
+  let _options: IMidbossOptions<T> = _.defaults(options, {
     useFreeze: false,
     useClone: false,
     useLocalStorage: false,
     useImmer: true,
   })
 
-  const localStorageKey = 'state:' + stateKey + ':' + version
+  let saver: flavorSaver.IFlavorSaver<T> = null
+
+  if (_options.useLocalStorage) {
+    saver = flavorSaver.create<T>(
+      'state:' + stateKey,
+      version,
+      _options.localStorageFields
+    )
+  }
+
   let isRehydrated = false
 
   // Try to restore our local state
   if (_options.useLocalStorage) {
-    if (typeof localStorage !== 'undefined') {
-      let stored = localStorage.getItem(localStorageKey)
-      if (stored) {
-        try {
-          initialState = _.assign({}, initialState, JSON.parse(stored))
-        } catch (err) {
-          log('Midboss: Error loading state from localStorage: ' + stateKey)
-        }
-      }
-    }
+    // if (typeof localStorage !== 'undefined') {
+    //   let stored = localStorage.getItem(localStorageKey)
+    //   if (stored) {
+    //     try {
+    //       initialState = _.assign({}, initialState, JSON.parse(stored))
+    //     } catch (err) {
+    //       log('Midboss: Error loading state from localStorage: ' + stateKey)
+    //     }
+    //   }
+    // }
+    initialState = saver.restore(initialState)
   }
 
-  let state = tryCloneAndFreeze(initialState, localStorageKey, _options)
+  let state = tryCloneAndFreeze(initialState, saver, _options)
 
   if (_options.useImmer) {
     state = immer.produce(state, draftState => {})
   }
 
   const getState = () => {
-    return tryCloneAndFreeze(state, localStorageKey, _options)
+    return tryCloneAndFreeze(state, saver, _options)
   }
   const setState = (changes: Partial<T>, sync = false) => {
     if (_options.useImmer) {
@@ -130,7 +152,7 @@ export function createMidboss<T>(
         }
       }
     },
-    setOptions: (options: IMidbossOptions) => {},
+    setOptions: (options: Partial<IMidbossLiveOptions>) => {},
     getOptions: () => {
       return _options
     },
@@ -141,7 +163,7 @@ export function createMidboss<T>(
       } else {
         let nextState = _.cloneDeep(state)
         producer(nextState)
-        nextState = tryCloneAndFreeze(nextState, localStorageKey, _options)
+        nextState = tryCloneAndFreeze(nextState, saver, _options)
       }
       if (sync) {
         PubSub.publishSync(stateKey)
