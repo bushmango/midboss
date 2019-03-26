@@ -106,17 +106,7 @@ export function createMidboss<T>(
 
   // Try to restore our local state
   if (_options.useLocalStorage) {
-    // if (typeof localStorage !== 'undefined') {
-    //   let stored = localStorage.getItem(localStorageKey)
-    //   if (stored) {
-    //     try {
-    //       initialState = _.assign({}, initialState, JSON.parse(stored))
-    //     } catch (err) {
-    //       log('Midboss: Error loading state from localStorage: ' + stateKey)
-    //     }
-    //   }
-    // }
-    initialState = saver.restore(initialState)
+    _.assign(initialState, saver.restore(initialState))
   }
   if (_options.onRestore) {
     initialState = _options.onRestore(initialState)
