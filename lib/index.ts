@@ -6,7 +6,7 @@ import * as flavorSaver from 'flavor-saver'
 
 const { useState, useEffect } = React
 import * as PubSub from 'pubsub-js'
-import { _ } from '../imports/lodash'
+import { _ } from './imports/lodash'
 import * as immer from 'immer'
 
 function log(...x) {
