@@ -29,7 +29,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "publish": "build && npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
