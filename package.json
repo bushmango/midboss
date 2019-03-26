@@ -30,7 +30,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "publish": "npm run build && npm version patch && npm publish"
+    "pub": "npm run build && npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
