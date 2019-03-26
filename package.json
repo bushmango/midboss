@@ -1,6 +1,6 @@
 {
   "name": "midboss",
-  "version": "0.15.2",
+  "version": "0.15.3",
   "description": "Managed Intelligent Delicious Basic Opinionated and Simple State",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,13 +12,13 @@
     "pubsub-js": "^1.7.0"
   },
   "devDependencies": {
+    "@types/react": "^16.8.8",
+    "@types/react-dom": "^16.8.3",
     "concurrently": "^4.1.0",
     "cross-env": "^5.2.0",
     "eslint-plugin-react-hooks": "^1.5.1",
     "isomorphic-unfetch": "^3.0.0",
     "moment": "^2.24.0",
-    "@types/react": "^16.8.8",
-    "@types/react-dom": "^16.8.3",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
     "typescript": "^3.3.4000"
