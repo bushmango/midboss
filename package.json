@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@types/node": "^11.11.7",
-    "flavor-saver": "^0.12.2",
+    "flavor-saver": "^0.12.3",
     "immer": "^2.1.4",
     "lodash": "^4.17.11",
     "pubsub-js": "^1.7.0"
@@ -16,7 +16,7 @@
     "@types/react-dom": "^16.8.3",
     "concurrently": "^4.1.0",
     "cross-env": "^5.2.0",
-    "eslint-plugin-react-hooks": "^1.5.1",
+    "eslint-plugin-react-hooks": "^1.6.0",
     "isomorphic-unfetch": "^3.0.0",
     "moment": "^2.24.0",
     "react": "^16.8.5",
