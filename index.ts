@@ -90,6 +90,7 @@ export function createMidboss<T>(
     useClone: false,
     useLocalStorage: false,
     useImmer: true,
+    localStorageFields: null,
   })
 
   let saver: flavorSaver.IFlavorSaver<T> = null
@@ -106,7 +107,13 @@ export function createMidboss<T>(
 
   // Try to restore our local state
   if (_options.useLocalStorage) {
-    _.assign(initialState, saver.restore(initialState))
+    if (_options.useVerbose) {
+      log('restoring from local storage', initialState)
+    }
+    initialState = saver.restore(initialState)
+    if (_options.useVerbose) {
+      log('restored', initialState)
+    }
   }
   if (_options.onRestore) {
     initialState = _options.onRestore(initialState)
