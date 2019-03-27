@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@types/node@^11.11.0", "@types/node@^11.11.7":
+"@types/node@11.12.0", "@types/node@^11.11.0":
   version "11.12.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.12.0.tgz#ec5594728811dc2797e42396cfcdf786f2052c12"
   integrity sha512-Lg00egj78gM+4aE0Erw05cuDbvX9sLJbaaPwwRtdCdAMnIudqrQZ0oZX98Ek0yiSK/A2nubHgJfvII/rTT2Dwg==
@@ -19,10 +19,18 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.8.8":
+"@types/react@*":
   version "16.8.8"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.8.tgz#4b60a469fd2469f7aa6eaa0f8cfbc51f6d76e662"
   integrity sha512-xwEvyet96u7WnB96kqY0yY7qxx/pEpU51QeACkKFtrgjjXITQn0oO1iwPEraXVgh10ZFPix7gs1R4OJXF7P5sg==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
+
+"@types/react@16.8.9":
+  version "16.8.9"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.9.tgz#79af4e48ea78c0534ffbaf18d0b1f9cacd3625dc"
+  integrity sha512-gckHt6IMscIMbmLOcpzyJhNw7vJe/QdZ9gmuaO02xRqlgmMeSz3m+C/SgR8iA9FyJUoYAWq2kBE/HDDpb2FzoA==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -177,10 +185,10 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
-flavor-saver@^0.12.2:
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/flavor-saver/-/flavor-saver-0.12.2.tgz#3b0826a72f19f267734a5c6cb260302d558a14f7"
-  integrity sha512-BGwqaoQlwgmJXrx0a02c2T9Z2vdCUyB5Dk9OnKur/3pjfjFiGKVlGr14K8cHAnz1hi4wHmIhyKjk61U97+rYHA==
+flavor-saver@0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/flavor-saver/-/flavor-saver-0.14.0.tgz#7e2bcbd7bc354a54c2e98f03f16ca0f3745044db"
+  integrity sha512-ffuqAMq6DSjtp7q0nXA4DE1yC9cvuZ+6551VIOfkr1AfD8s+VieUOgw7Hgb+zCOM/RbQyLS8r2wIuKZvic/AtA==
   dependencies:
     "@types/node" "^11.11.0"
     lodash "^4.17.11"
