@@ -20,7 +20,7 @@ export interface IMidbossOptions<T> {
   useFreeze: boolean
   useClone: boolean
   useLocalStorage: boolean
-  localStorageFields?: [keyof T]
+  localStorageFields?: Array<keyof T>
   onSave?: (t: T) => void
   onRestore?: (t: T) => T
   useImmer: boolean
