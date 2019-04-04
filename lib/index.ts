@@ -217,7 +217,7 @@ export function useSubscription<T>(midboss: IMidboss<T>): T {
       setState(newState)
     }
     let subscriptionToken = midboss.subscribeHook(handleStateChange)
-    // setState(midboss.getState())
+    setState(midboss.getState())
 
     return () => {
       midboss.unSubscribe(subscriptionToken)
