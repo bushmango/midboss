@@ -221,7 +221,7 @@ export function useSubscription<T>(midboss: IMidboss<T>): T {
     return () => {
       midboss.unSubscribe(subscriptionToken)
     }
-  })
+  }, [])
 
   return state
 }
