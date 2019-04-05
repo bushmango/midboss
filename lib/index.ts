@@ -207,12 +207,19 @@ export function createMidboss<T>(
 
 // React hook
 export function useSubscription<T>(midboss: IMidboss<T>): T {
+  if (midboss.getOptions().useVerbose) {
+    log('hook init', midboss.stateKey)
+  }
+
   const [state, setState] = useState(midboss.getState()) as [
     T,
     (stateChange: Partial<T>) => void
   ]
 
   useEffect(() => {
+    if (midboss.getOptions().useVerbose) {
+      log('hook use effect', midboss.stateKey)
+    }
     const handleStateChange = (newState: T) => {
       setState(newState)
     }
@@ -220,6 +227,9 @@ export function useSubscription<T>(midboss: IMidboss<T>): T {
     setState(midboss.getState())
 
     return () => {
+      if (midboss.getOptions().useVerbose) {
+        log('hook use effect cleanup', midboss.stateKey)
+      }
       midboss.unSubscribe(subscriptionToken)
     }
   }, [])
