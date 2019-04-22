@@ -9,6 +9,8 @@ import * as PubSub from 'pubsub-js'
 import { _ } from './imports/lodash'
 import * as immer from 'immer'
 
+immer.setAutoFreeze(false)
+
 function log(...x) {
   if (console && console.log) {
     console.log('midboss', ...x)
@@ -48,9 +50,7 @@ function tryCloneAndFreeze<T>(
 ) {
   let nextState = state
 
-  if (options.useImmer) {
-    // Handled for us automagically
-  } else if (options.useClone) {
+  if (options.useClone) {
     nextState = _.cloneDeep(state)
   } else if (options.useFreeze && Object.freeze) {
     Object.freeze(nextState)
@@ -67,9 +67,7 @@ function tryCloneAndFreeze<T>(
 }
 
 function tryFreeze<T>(state, options: IMidbossOptions<T>) {
-  if (options.useImmer) {
-    // Don't freeze
-  } else if (options.useFreeze && Object.freeze) {
+  if (options.useFreeze && Object.freeze) {
     Object.freeze(tryFreeze)
   }
 }
@@ -81,7 +79,7 @@ export function createMidboss<T>(
   options: Partial<IMidbossOptions<T>>
 ): IMidboss<T> {
   let _options: IMidbossOptions<T> = _.defaults(options, {
-    useFreeze: false,
+    useFreeze: true,
     useClone: false,
     useLocalStorage: false,
     useImmer: true,
@@ -116,9 +114,9 @@ export function createMidboss<T>(
 
   let state = tryCloneAndFreeze(initialState, saver, _options)
 
-  if (_options.useImmer) {
-    state = immer.produce(state, draftState => {})
-  }
+  // if (_options.useImmer) {
+  //   state = immer.produce(state, draftState => {})
+  // }
 
   const getState = () => {
     return tryCloneAndFreeze(state, saver, _options)
@@ -128,6 +126,7 @@ export function createMidboss<T>(
       state = immer.produce(state, draftState => {
         _.assign(draftState, changes)
       })
+      state = tryFreeze(state, _options)
     } else {
       state = tryFreeze(_.assign({}, state, changes), _options)
     }
@@ -160,6 +159,7 @@ export function createMidboss<T>(
     produce: (producer: (draftState: T) => void, sync = true) => {
       if (_options.useImmer) {
         state = immer.produce(state, producer)
+        state = tryFreeze(state, _options)
       } else {
         let nextState = _.cloneDeep(state)
         producer(nextState)
