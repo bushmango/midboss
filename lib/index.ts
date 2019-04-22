@@ -43,6 +43,27 @@ export interface IMidboss<T> {
   rehydrate: (changes: Partial<T>) => any
 }
 
+// See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+function deepFreeze(object) {
+  if (!Object.freeze) {
+    return object
+  }
+  // Retrieve the property names defined on object
+  let propNames = Object.getOwnPropertyNames(object)
+
+  // Freeze properties before freezing self
+  for (let name of propNames) {
+    let value = object[name]
+    if (value) {
+      let type = typeof value
+      if (type === 'object' || type === 'function') {
+        object[name] = deepFreeze(value)
+      }
+    }
+  }
+  return Object.freeze(object)
+}
+
 function tryCloneAndFreeze<T>(
   state,
   saver: flavorSaver.IFlavorSaver<T>,
@@ -52,8 +73,9 @@ function tryCloneAndFreeze<T>(
 
   if (options.useClone) {
     nextState = _.cloneDeep(state)
-  } else if (options.useFreeze && Object.freeze) {
-    Object.freeze(nextState)
+  }
+  if (options.useFreeze) {
+    deepFreeze(nextState)
   }
 
   if (options.useLocalStorage && saver) {
@@ -67,8 +89,8 @@ function tryCloneAndFreeze<T>(
 }
 
 function tryFreeze<T>(state, options: IMidbossOptions<T>) {
-  if (options.useFreeze && Object.freeze) {
-    Object.freeze(tryFreeze)
+  if (options.useFreeze) {
+    deepFreeze(tryFreeze)
   }
 }
 
