@@ -5,23 +5,23 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@types/node": "11.12.0",
+    "@types/node": "11.13.6",
     "flavor-saver": "0.14.0",
-    "immer": "^2.1.4",
+    "immer": "3.1.1",
     "lodash": "^4.17.11",
     "pubsub-js": "^1.7.0"
   },
   "devDependencies": {
-    "@types/react": "16.8.9",
-    "@types/react-dom": "^16.8.3",
+    "@types/react": "16.8.14",
+    "@types/react-dom": "16.8.4",
     "concurrently": "^4.1.0",
     "cross-env": "^5.2.0",
     "eslint-plugin-react-hooks": "^1.6.0",
     "isomorphic-unfetch": "^3.0.0",
     "moment": "^2.24.0",
-    "react": "^16.8.5",
-    "react-dom": "^16.8.5",
-    "typescript": "^3.3.4000"
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "typescript": "3.4.4"
   },
   "peerDependencies": {
     "react": "^16.8",

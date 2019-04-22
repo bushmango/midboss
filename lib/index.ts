@@ -49,17 +49,12 @@ function tryCloneAndFreeze<T>(
   let nextState = state
 
   if (options.useImmer) {
+    // Handled for us automagically
   } else if (options.useClone) {
     nextState = _.cloneDeep(state)
   } else if (options.useFreeze && Object.freeze) {
     Object.freeze(nextState)
   }
-
-  // if (options.useLocalStorage) {
-  //   if (typeof localStorage !== 'undefined') {
-  //     localStorage.setItem(localStorageKey, JSON.stringify(nextState))
-  //   }
-  // }
 
   if (options.useLocalStorage && saver) {
     saver.save(nextState)
