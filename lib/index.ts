@@ -9,8 +9,6 @@ import * as PubSub from 'pubsub-js'
 import { _ } from './imports/lodash'
 import * as immer from 'immer'
 
-immer.setAutoFreeze(false)
-
 function log(...x) {
   if (console && console.log) {
     console.log('midboss', ...x)
@@ -137,9 +135,9 @@ export function createMidboss<T>(
 
   let state = tryCloneAndFreeze(initialState, saver, _options)
 
-  // if (_options.useImmer) {
-  //   state = immer.produce(state, draftState => {})
-  // }
+  if (_options.useImmer) {
+    state = immer.produce(state, draftState => {})
+  }
 
   const getState = () => {
     return tryCloneAndFreeze(state, saver, _options)
@@ -149,7 +147,6 @@ export function createMidboss<T>(
       state = immer.produce(state, draftState => {
         _.assign(draftState, changes)
       })
-      state = tryFreeze(state, _options)
     } else {
       state = tryFreeze(_.assign({}, state, changes), _options)
     }
