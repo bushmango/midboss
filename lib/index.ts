@@ -15,6 +15,26 @@ function log(...x) {
   }
 }
 
+// See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+function deepFreeze(object) {
+  if (!Object.freeze) {
+    return object
+  }
+  // Retrieve the property names defined on object
+  let propNames = Object.getOwnPropertyNames(object)
+
+  // Freeze properties before freezing self
+  for (let name of propNames) {
+    let value = object[name]
+    if (value) {
+      let type = typeof value
+      if (type === 'object' || type === 'function') {
+        object[name] = deepFreeze(value)
+      }
+    }
+  }
+  return Object.freeze(object)
+}
 export interface IMidbossOptions<T> {
   useVerbose: boolean
   useLocalStorage: boolean
@@ -95,7 +115,14 @@ export function createMidboss<T>(
   let state = immer.produce(initialState, draftState => {})
   onStateChanged(state, saver, _options)
 
+  if (!Object.isFrozen(state)) {
+    state = deepFreeze(state)
+  }
+
   const getState = () => {
+    if (!Object.isFrozen(state)) {
+      state = deepFreeze(state)
+    }
     return state
   }
   const setState = (changes: Partial<T>, sync = false) => {
