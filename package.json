@@ -1,6 +1,6 @@
 {
   "name": "midboss",
-  "version": "0.18.7",
+  "version": "0.18.8",
   "description": "Managed Intelligent Delicious Basic Opinionated and Simple State",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
