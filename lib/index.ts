@@ -90,8 +90,9 @@ function tryCloneAndFreeze<T>(
 
 function tryFreeze<T>(state, options: IMidbossOptions<T>) {
   if (options.useFreeze) {
-    deepFreeze(tryFreeze)
+    state = deepFreeze(state)
   }
+  return state
 }
 
 export function createMidboss<T>(
@@ -251,5 +252,5 @@ export function useSubscription<T>(midboss: IMidboss<T>): T {
     }
   }, [])
 
-  return state
+  return tryFreeze(state, midboss.getOptions())
 }
