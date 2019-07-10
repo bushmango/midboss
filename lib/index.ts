@@ -38,6 +38,7 @@ function deepFreeze(object) {
 export interface IMidbossOptions<T> {
   useVerbose: boolean
   useLocalStorage: boolean
+  useExtraFreeze: boolean
   localStorageFields?: Array<keyof T>
   onSave?: (t: T) => void
   onRestore?: (t: T) => T
@@ -115,13 +116,17 @@ export function createMidboss<T>(
   let state = immer.produce(initialState, draftState => {})
   onStateChanged(state, saver, _options)
 
-  if (!Object.isFrozen(state)) {
-    state = deepFreeze(state)
+  if (options.useExtraFreeze) {
+    if (!Object.isFrozen(state)) {
+      state = deepFreeze(state)
+    }
   }
 
   const getState = () => {
-    if (!Object.isFrozen(state)) {
-      state = deepFreeze(state)
+    if (options.useExtraFreeze) {
+      if (!Object.isFrozen(state)) {
+        state = deepFreeze(state)
+      }
     }
     return state
   }
