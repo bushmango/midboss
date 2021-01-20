@@ -7,7 +7,7 @@
   "dependencies": {
     "@types/node": "11.13.6",
     "flavor-saver": "0.14.0",
-    "immer": "3.1.1",
+    "immer": "8.0.1",
     "lodash": "^4.17.11",
     "pubsub-js": "^1.7.0"
   },
